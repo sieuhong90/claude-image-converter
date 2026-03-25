@@ -1,0 +1,73 @@
+{
+  "skill_name": "image-converter",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I have a jpg photo at /tmp/image-converter-test/test_photo.jpg. Can you convert it to PNG for me?",
+      "expected_output": "The file test_photo.png appears in /tmp/image-converter-test/Output/, conversion succeeded using an available tool (sips, Pillow, or ImageMagick)",
+      "files": ["/tmp/image-converter-test/test_photo.jpg"],
+      "assertions": [
+        {
+          "name": "output_file_exists",
+          "description": "Output PNG file exists at /tmp/image-converter-test/Output/test_photo.png"
+        },
+        {
+          "name": "output_in_correct_folder",
+          "description": "Output is placed in an 'Output' subfolder of the source directory"
+        },
+        {
+          "name": "correct_format",
+          "description": "Output file is a valid PNG image"
+        },
+        {
+          "name": "reports_success",
+          "description": "Claude reports the conversion succeeded and states where the output file is"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "I have a PNG with transparency at /tmp/image-converter-test/test_rgba.png. Please convert it to JPG.",
+      "expected_output": "test_rgba.jpg is created in /tmp/image-converter-test/Output/. Alpha channel handled gracefully (flattened to white background). No errors about unsupported mode.",
+      "files": ["/tmp/image-converter-test/test_rgba.png"],
+      "assertions": [
+        {
+          "name": "output_file_exists",
+          "description": "Output JPG file exists at /tmp/image-converter-test/Output/test_rgba.jpg"
+        },
+        {
+          "name": "output_is_valid_jpeg",
+          "description": "Output file is a valid JPEG image (no mode/alpha errors)"
+        },
+        {
+          "name": "no_error_about_alpha",
+          "description": "Claude does not report a failure due to RGBA/alpha channel incompatibility"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I've got a folder of images at /tmp/image-converter-test/. Can you convert all of them to PNG format?",
+      "expected_output": "All supported images in the folder (test_photo.jpg, test_rgb.png, test_rgba.png) are processed. JPG files are converted to PNG. The Output/ subfolder contains the results.",
+      "files": ["/tmp/image-converter-test/"],
+      "assertions": [
+        {
+          "name": "output_folder_created",
+          "description": "An Output/ folder is created inside /tmp/image-converter-test/"
+        },
+        {
+          "name": "jpg_converted_to_png",
+          "description": "test_photo.jpg was converted to test_photo.png in the Output folder"
+        },
+        {
+          "name": "all_files_processed",
+          "description": "Claude reports processing multiple files (batch mode worked)"
+        },
+        {
+          "name": "reports_count",
+          "description": "Claude reports how many files were converted successfully"
+        }
+      ]
+    }
+  ]
+}
